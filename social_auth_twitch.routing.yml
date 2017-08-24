@@ -1,0 +1,25 @@
+social_auth_twitch.redirect_to_twitch:
+  path: 'user/login/twitch'
+  defaults:
+    _controller: '\Drupal\social_auth_twitch\Controller\TwitchAuthController::redirectToTwitch'
+  requirements:
+    _role: 'anonymous'
+  options:
+    no_cache: TRUE
+
+social_auth_twitch.callback:
+  path: 'user/login/twitch/callback'
+  defaults:
+    _controller: '\Drupal\social_auth_twitch\Controller\TwitchAuthController::callback'
+  requirements:
+    _role: 'anonymous'
+  options:
+    no_cache: TRUE
+
+social_auth_twitch.settings_form:
+  path: 'admin/config/social-api/social-auth/twitch'
+  defaults:
+    _title: 'Social Auth Twitch settings'
+    _form: '\Drupal\social_auth_twitch\Form\TwitchAuthSettingsForm'
+  requirements:
+    _permission: 'administer social api authentication'
