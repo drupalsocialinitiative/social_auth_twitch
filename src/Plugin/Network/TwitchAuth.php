@@ -2,6 +2,7 @@
 
 namespace Drupal\social_auth_twitch\Plugin\Network;
 
+use Depotwarehouse\OAuth2\Client\Twitch\Provider\Twitch;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
@@ -11,7 +12,6 @@ use Drupal\social_api\Plugin\NetworkBase;
 use Drupal\social_api\SocialApiException;
 use Drupal\social_auth_twitch\Settings\TwitchAuthSettings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use League\OAuth2\Client\Provider\Twitch;
 use Drupal\Core\Site\Settings;
 
 /**
@@ -66,7 +66,7 @@ class TwitchAuth extends NetworkBase implements TwitchAuthInterface {
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $container->get('social_auth.social_auth_data_handler'),
+      $container->get('social_auth.data_handler'),
       $configuration,
       $plugin_id,
       $plugin_definition,
@@ -122,8 +122,9 @@ class TwitchAuth extends NetworkBase implements TwitchAuthInterface {
   /**
    * Sets the underlying SDK library.
    *
-   * @return \League\OAuth2\Client\Provider\Twitch
+   * @return \Depotwarehouse\OAuth2\Client\Twitch\Provider\Twitch|false
    *   The initialized 3rd party library instance.
+   *   False if library could not be initialized.
    *
    * @throws SocialApiException
    *   If the SDK library does not exist.
@@ -136,28 +137,24 @@ class TwitchAuth extends NetworkBase implements TwitchAuthInterface {
     }
     /* @var \Drupal\social_auth_twitch\Settings\TwitchAuthSettings $settings */
     $settings = $this->settings;
-    // Proxy configuration data for outward proxy.
-    $proxyUrl = $this->siteSettings->get("http_client_config")["proxy"]["http"];
+
     if ($this->validateConfig($settings)) {
       // All these settings are mandatory.
+      $league_settings = [
+        'clientId' => $settings->getClientId(),
+        'clientSecret' => $settings->getClientSecret(),
+        'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/twitch/callback',
+      ];
+
+      // Proxy configuration data for outward proxy.
+      $proxyUrl = $this->siteSettings->get('http_client_config')['proxy']['http'];
       if ($proxyUrl) {
-        $league_settings = [
-          'clientId' => $settings->getClientId(),
-          'clientSecret' => $settings->getClientSecret(),
-          'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/twitch/callback',
-          'proxy' => $proxyUrl,
-        ];
-      }
-      else {
-        $league_settings = [
-          'clientId' => $settings->getClientId(),
-          'clientSecret' => $settings->getClientSecret(),
-          'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/twitch/callback',
-        ];
+        $league_settings['proxy'] = $proxyUrl;
       }
 
-      return new \Depotwarehouse\OAuth2\Client\Twitch\Provider\Twitch($league_settings);
+      return new Twitch($league_settings);
     }
+
     return FALSE;
   }
 
@@ -174,6 +171,7 @@ class TwitchAuth extends NetworkBase implements TwitchAuthInterface {
   protected function validateConfig(TwitchAuthSettings $settings) {
     $client_id = $settings->getClientId();
     $client_secret = $settings->getClientSecret();
+
     if (!$client_id || !$client_secret) {
       $this->loggerFactory
         ->get('social_auth_twitch')

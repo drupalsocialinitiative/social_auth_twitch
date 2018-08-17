@@ -11,9 +11,8 @@ use Drupal\social_auth\Controller\SocialAuthController;
 /**
  * Implements hook_requirements().
  *
- * Checks that a compatible version of oAuth2 Twitch library for the
- * league OAuth2 client with Composer. Check installation instructions
- * from the README.txt.
+ * Checks that a compatible version of PHP League OAuth2 Twitch library is
+ * available. Check installation instructions in README.txt.
  */
 function social_auth_twitch_requirements($phase) {
 
@@ -34,7 +33,7 @@ function social_auth_twitch_requirements($phase) {
  * Implements hook_install().
  */
 function social_auth_twitch_install() {
-  SocialAuthController::setLoginButtonSettings('social_auth_twitch', 'social_auth_twitch.redirect_to_twitch', 'img/twitch_logo.svg');
+  SocialAuthController::setLoginButtonSettings('social_auth_twitch', 'social_auth_twitch.redirect_to_provider', 'img/twitch_logo.svg');
 }
 
 /**

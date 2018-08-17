@@ -80,7 +80,7 @@ class TwitchAuthSettingsForm extends SocialAuthSettingsForm {
       '#type' => 'details',
       '#title' => $this->t('Twitch Client settings'),
       '#open' => TRUE,
-      '#description' => $this->t('You need to first create a Twitch App at <a href="@twitch-dev">@twitch-dev</a>', ['@twitch-dev' => 'https://www.twitch.tv/kraken/oauth2/clients/new']),
+      '#description' => $this->t('You need to first create a Twitch App at <a href="@twitch-dev">@twitch-dev</a>', ['@twitch-dev' => 'https://glass.twitch.tv/console/apps']),
     ];
 
     $form['twitch_settings']['client_id'] = [
@@ -102,17 +102,34 @@ class TwitchAuthSettingsForm extends SocialAuthSettingsForm {
     $form['twitch_settings']['authorized_redirect_url'] = [
       '#type' => 'textfield',
       '#disabled' => TRUE,
-      '#title' => $this->t('Authorized redirect URIs'),
-      '#description' => $this->t('Copy this value to <em>Authorized redirect URIs</em> field of your Twitch App settings.'),
+      '#title' => $this->t('OAuth Redirect URL'),
+      '#description' => $this->t('Copy this value to <em>OAuth Redirect URL</em> field of your Twitch App settings.'),
       '#default_value' => $GLOBALS['base_url'] . '/user/login/twitch/callback',
     ];
 
-    $form['twitch_settings']['authorized_javascript_origin'] = [
-      '#type' => 'textfield',
-      '#disabled' => TRUE,
-      '#title' => $this->t('Authorized Javascript Origin'),
-      '#description' => $this->t('Copy this value to <em>Authorized Javascript Origins</em> field of your Twitch App settings.'),
-      '#default_value' => $this->requestContext->getHost(),
+    $form['twitch_settings']['advanced'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Advanced settings'),
+      '#open' => FALSE,
+    ];
+
+    $form['twitch_settings']['advanced']['scopes'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Scopes for API call'),
+      '#default_value' => $config->get('scopes'),
+      '#description' => $this->t('Define any additional scopes to be requested, separated by a comma (e.g.: user_subscriptions,channel_subscriptions).<br>
+                                  The scope \'user_read\' is added by default and always requested.<br>
+                                  You can see the full list of valid scopes and their description <a href="@scopes">here</a>.', ['@scopes' => 'https://dev.twitch.tv/docs/authentication/#scopes']),
+    ];
+
+    $form['twitch_settings']['advanced']['endpoints'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('API calls to be made to collect data'),
+      '#default_value' => $config->get('endpoints'),
+      '#description' => $this->t('Define the Endpoints to be requested when user authenticates with Twitch for the first time<br>
+                                  Enter each endpoint in different lines in the format <em>endpoint</em>|<em>name_of_endpoint</em>.<br>
+                                  <b>For instance:</b><br>
+                                  /kraken/clips/followed|followed_clips<br>'),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -126,6 +143,8 @@ class TwitchAuthSettingsForm extends SocialAuthSettingsForm {
     $this->config('social_auth_twitch.settings')
       ->set('client_id', $values['client_id'])
       ->set('client_secret', $values['client_secret'])
+      ->set('scopes', $values['scopes'])
+      ->set('endpoints', $values['endpoints'])
       ->save();
 
     parent::submitForm($form, $form_state);
