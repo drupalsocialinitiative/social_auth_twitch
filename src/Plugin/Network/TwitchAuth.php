@@ -17,7 +17,7 @@ use Drupal\Core\Site\Settings;
 /**
  * Defines a Network Plugin for Social Auth Twitch.
  *
- * @package Drupal\simple_twitch_connect\Plugin\Network
+ * @package Drupal\social_auth_twitch\Plugin\Network
  *
  * @Network(
  *   id = "social_auth_twitch",
