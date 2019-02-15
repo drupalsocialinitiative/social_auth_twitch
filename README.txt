@@ -13,7 +13,7 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 
-Social Auth Twitch Module is a Twitch authentication integration for Drupal. It is
+Social Auth Twitch is a Twitch authentication integration for Drupal. It is
 based on the Social Auth and Social API projects
 
 
