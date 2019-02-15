@@ -22,7 +22,7 @@ class TwitchAuthController extends OAuth2ControllerBase {
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
    * @param \Drupal\social_api\Plugin\NetworkManager $network_manager
-   *   Used to get an instance of social_auth_google network plugin.
+   *   Used to get an instance of social_auth_twitch network plugin.
    * @param \Drupal\social_auth\User\UserAuthenticator $user_authenticator
    *   Used to manage user authentication/registration.
    * @param \Drupal\social_auth_twitch\TwitchAuthManager $twitch_manager
