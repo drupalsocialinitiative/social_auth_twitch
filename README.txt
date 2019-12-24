@@ -30,11 +30,14 @@ INSTALLATION
 ------------
 
  * Run composer to install dependencies:
-   composer require "drupal/social_auth_twitch:~2.0"
+   composer require "drupal/social_auth_twitch:^2.0"
 
  * Install as you would normally install a contributed Drupal module.
    See https://drupal.org/documentation/install/modules-themes/modules-8
    for further information.
+
+  * A more comprehensive installation instruction for Drupal 8 can be found at
+    https://www.drupal.org/docs/8/modules/social-api/social-api-2x/social-auth-2x/social-auth-twitch-2x-installation
 
 
 CONFIGURATION
