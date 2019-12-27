@@ -43,7 +43,7 @@ class TwitchAuth extends NetworkBase implements TwitchAuthInterface {
     if (!class_exists($class_name)) {
       throw new SocialApiException(sprintf('The Twitch library for PHP League OAuth2 not found. Class: %s.', $class_name));
     }
-    /* @var \Drupal\social_auth_twitch\Settings\TwitchAuthSettings $settings */
+    /** @var \Drupal\social_auth_twitch\Settings\TwitchAuthSettings $settings */
     $settings = $this->settings;
 
     if ($this->validateConfig($settings)) {
